@@ -33,17 +33,18 @@ def get_quiz_questions(quiz_id: int):
     return questions
 
 
-# @app.post('/create-session')
-# def create_session():
-#     return {"Hello": "World"}
+@app.post('/quizzes/{quiz_id}/submit')
+def answer_quiz(quiz_id: int):
+    '''
+    Submit quiz answers
+    '''
+    quiz = quiz_repository.get_quiz_by_id(quiz_id)
+    return quiz
 
 
-# @app.post("/evaluate-answer")
-# def evaluate_answer():
-#     evaluate_answer()
-#     return {"Hello": "World"}
-
-
-# @app.get("/scoreboard")
-# def scoreboard():
-#     return {"Hello": "World"}
+@app.get('/quizzes/scoreboard')
+def get_scoreboard():
+    '''
+    Retrieve scoreboard
+    '''
+    return {'message': 'Scoreboard'}
