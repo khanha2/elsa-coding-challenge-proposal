@@ -254,3 +254,6 @@ Prometheus records metrics in a time series database built using an HTTP pull mo
 #### 1.3.12. Grafana
 
 Grafana helps developers access metrics in Prometheus via queries.
+
+## 2. Implementation
+
