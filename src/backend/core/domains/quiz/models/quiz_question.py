@@ -1,6 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import relationship
 
 from core.db.database import Base
 
