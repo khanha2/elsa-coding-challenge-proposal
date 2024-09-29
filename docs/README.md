@@ -172,16 +172,34 @@ sequenceDiagram
 
 We use Kubernetes for the following purposes:
 
-- Resource Management: control resources (CPU, RAM, Disk) that each container need.
-- Horizontal scalling: Increase or decrease number of application containers based on the growth in the number of users.
-- Load balancing: Distributes network traffic across multiple containers to ensure high availability and reliability of services.
+- **Resource Management**: Controls the resources (CPU, RAM, Disk) that each container needs.
+- **Horizontal Scaling**: Increases or decreases the number of application containers based on user growth.
+- **Load Balancing**: Distributes network traffic across multiple containers to ensure high availability and reliability of services.
 
 #### 1.3.2. PostgreSQL
 
-We use PostgresQL for the main database to store and query data.
+We use PostgreSQL as the main database to store and query data.
 
-The database is a bottleneck in the system, because we cannot scale it immediately when number of users changed. To solve this problem, we have 2 databases:
+The database is a bottleneck in the system because we cannot scale it as fast as possible when the number of users changes. To solve this problem, we use two databases:
 
-- The primary database: receive write transactions from Worker service containers. Number of transactions is controlled when using the message queue.
-- The replica database: receive read transactions from API service containers. We can increase number of replica databases when number of users changed.
+- The primary database: Receives write transactions from Worker service containers. The number of transactions is controlled by using the message queue.
+- The replica database: Receives read transactions from API service containers. We can increase the number of replica databases when the number of users changes.
 
+#### 1.3.3. Redis
+
+Redis serves the following purposes:
+
+- Centralized storage for temporary data, including web socket information and session information.
+- Caches expected answers for quiz questions to reduce the number of read transactions to the database.
+
+We can apply Redis replication to handle a large number of users.
+
+#### 1.3.4. RabbitMQ
+
+RabbitMQ is used for message queuing because of the following reasons:
+
+- Queuing messages until they can be processed allows the system to process requests asynchronously and handle large volumes.
+- Messages can be persisted, replicated, and acknowledged to ensure they are not lost, even if the system fails.
+- It supports horizontal scaling, allowing multiple service containers to connect.
+- It supports message acknowledgment, ensuring that a message is processed once and only once.
+RabbitMQ provides built-in tools for monitoring message queues, consumers, and system performance, allowing for effective management and debugging.
