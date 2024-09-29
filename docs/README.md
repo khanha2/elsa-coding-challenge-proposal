@@ -1,5 +1,10 @@
 ## 1. Analysing requirements
 
+### Scale
+
+To handle a large of requests when number of users increase, we should scale the system. We have 2 scalling approaches:
+
+- **Vertial scalling**: Upgrading hardware components, such as CPU, RAM, and network speed, adding more resources or storage, to handle larger workloads. This method make the system downtimes to upgrade.
 
 
 ## 2. System design
@@ -10,19 +15,19 @@
 
 ### 2.2. Component description
 
-#### 2.2.1. Application components
+#### 2.2.1. Application services
 
 ##### 2.2.1.1. API
 
-This component receives requests from users, including creating sessions, receiving participants' answers, and retrieving the scoreboard.
+This service receives requests from users, including creating sessions, receiving participants' answers, and retrieving the scoreboard.
 
 ##### 2.2.1.2. Notificator
 
-This component notifies participants and scoreboard viewers of new updates, including question results and scoreboard changes.
+This service notifies participants and scoreboard viewers of new updates, including question results and scoreboard changes.
 
 ##### 2.2.1.3. Worker
 
-This component serves the following purposes:
+This service serves the following purposes:
 
 - Evaluating participants' answers.
 - Writing participants' scores to the database.
@@ -79,7 +84,30 @@ This component serves for DNS management, web security, and secure connections v
 
 ##### 2.2.4.2. Load balancer
 
-Since all application components can be scaled using the horizontal scaling method, the load balancer dynamically distributes traffic across application workers.
+Since all application components can be scaled using the horizontal scaling method, the load balancer dynamically distributes traffic across API, Notificator workers.
+
+#### 2.2.6. Message queue
+
+This component controls requests from participants to write the results to the database in case the number of API workers is increased.
+
+#### 2.2.7. Database
+
+##### Primary database
+
+This database receives write requests from the Worker service workers to store data.
+
+##### Replica database
+
+This database serves the following purposes:
+
+- Receives read requests from the API service workers and responds with the queried data.
+- Receives updated data from the primary database for reading.
+
+The number of replica databases can be increased based on the growth in the number of users.
+
+##### Redis
+
+
 
 ### Data flows
 
