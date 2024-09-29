@@ -92,25 +92,27 @@ This component controls requests from participants to write the results to the d
 
 #### 2.2.7. Database
 
-##### Primary database
+##### 2.2.7.1. Primary database
 
-This database receives write requests from the Worker service workers to store data.
+This database receives write transations from Worker service workers to store data.
 
-##### Replica database
+##### 2.2.7.2. Replica database
 
 This database serves the following purposes:
 
-- Receives read requests from the API service workers and responds with the queried data.
+- Receives read transations from API service workers and responds with the queried data.
 - Receives updated data from the primary database for reading.
 
 The number of replica databases can be increased based on the growth in the number of users.
 
-##### Redis
+##### 2.2.7.3. Redis
 
+Redis serves the following purposes:
 
+- Centralized storage for temporary data, including web socket information and session information.
+- Caches expected answers for quiz questions to reduce the number of read transactions to the database.
 
 ### Data flows
-
 
 
 ### Technologies and tools
