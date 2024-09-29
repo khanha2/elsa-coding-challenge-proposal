@@ -257,3 +257,39 @@ Grafana helps developers access metrics in Prometheus via queries.
 
 ## 2. Implementation
 
+### 2.1. Code structure
+
+The code structure
+
+```
+api
+| -- models.py
+| -- main.py
+notificator
+| -- main.py
+core
+| -- db
+|    | -- versions
+|    | -- database.py
+| -- domains
+|    | -- quiz
+|    |    | -- models
+|    |    |    | -- quiz.py
+|    |    |    | -- ...
+|    |    |    | -- __init__.py
+|    |    | -- actions
+|    |    |    | -- submit_answer_action.py
+|    |    | -- repository.py
+|    | -- ...
+| -- helpers
+|    | -- string_helper.py
+|    |
+| -- services
+|    | -- cache.py
+|    | -- rabbitmq.py
+|    | -- redis.py
+| -- tests
+|    | -- domains
+|    |    | -- quiz
+|    |    |    | -- test_submit_answer_action.py
+```
