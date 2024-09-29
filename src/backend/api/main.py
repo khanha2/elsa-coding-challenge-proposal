@@ -1,8 +1,9 @@
-from typing import Union
+from typing import List, Union
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
-from core.domains.quiz import repository as quiz_repository
+from core.domains.quiz import repository as quiz_repository, actions as quiz_actions
+from core.domains.quiz.structs import Answer
 
 app = FastAPI()
 
@@ -21,6 +22,8 @@ def get_quiz(quiz_id: int):
     Retrive quiz by quiz id
     '''
     quiz = quiz_repository.get_quiz_by_id(quiz_id)
+    if not quiz:
+        raise HTTPException(status_code=404, detail='not found')
     return quiz
 
 
@@ -34,12 +37,15 @@ def get_quiz_questions(quiz_id: int):
 
 
 @app.post('/quizzes/{quiz_id}/submit')
-def answer_quiz(quiz_id: int):
+def answer_quiz(quiz_id: int, answers: List[Answer]):
     '''
     Submit quiz answers
     '''
     quiz = quiz_repository.get_quiz_by_id(quiz_id)
-    return quiz
+    if not quiz:
+        raise HTTPException(status_code=404, detail='not found')
+    score = quiz_actions.evaluate_answers(quiz, answers)
+    return {'total_score': score}
 
 
 @app.get('/quizzes/scoreboard')

@@ -16,3 +16,4 @@ class QuizQuestion(Base):
     expected_option = Column(String, nullable=True)
     # Structure of options: [{'code': 'A', 'content': 'content of option A'}, ...]
     options = Column(JSONB, nullable=True)
+
