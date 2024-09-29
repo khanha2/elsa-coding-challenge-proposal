@@ -15,13 +15,22 @@ def index():
     return {'message': 'welcome to the quiz app'}
 
 
-@app.get('/quizzes/{quiz_code}')
-def get_quiz(quiz_code: str):
+@app.get('/quizzes/{quiz_id}')
+def get_quiz(quiz_id: int):
     '''
-    Retrive quiz by quiz code
+    Retrive quiz by quiz id
     '''
-    quiz = quiz_repository.get_quiz(quiz_code)
+    quiz = quiz_repository.get_quiz_by_id(quiz_id)
     return quiz
+
+
+@app.get('/quizzes/{quiz_id}/questions')
+def get_quiz_questions(quiz_id: int):
+    '''
+    Retrive quiz questions by quiz code
+    '''
+    questions = quiz_repository.list_questions_by_quiz_id(quiz_id)
+    return questions
 
 
 # @app.post('/create-session')
