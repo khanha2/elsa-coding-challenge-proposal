@@ -265,8 +265,6 @@ The code structure
 api
 | -- models.py
 | -- main.py
-notificator
-| -- main.py
 core
 | -- db
 |    | -- versions
@@ -280,10 +278,13 @@ core
 |    |    | -- actions
 |    |    |    | -- submit_answer_action.py
 |    |    | -- repository.py
+|    | -- user
+|    |    | -- models
+|    |    | -- res
 |    | -- ...
 | -- helpers
 |    | -- string_helper.py
-|    |
+|    | --- ...
 | -- services
 |    | -- cache.py
 |    | -- rabbitmq.py
@@ -292,4 +293,21 @@ core
 |    | -- domains
 |    |    | -- quiz
 |    |    |    | -- test_submit_answer_action.py
+notificator
+| -- main.py
 ```
+
+### 2.2. Module explation
+
+#### Core module
+
+- Store the common tools, including:
+  + Database connection
+  + RabbitMQ connection
+  + Redis connection
+- Store business flows. Business flows are divided into multiple domains. Each domain is implemented with:
+  + Models: Stores all database models.
+  + Actions: Stores all actions.
+  + Repository module: Supports data retrieval.
+- Store commonly used helpers.
+- Store unit tests for business flows.
