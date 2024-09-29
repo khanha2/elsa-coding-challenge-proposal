@@ -103,12 +103,13 @@ Redis serves the following purposes:
 - Centralized storage for temporary data, including web socket information and session information.
 - Caches expected answers for quiz questions to reduce the number of read transactions to the database.
 
-### 2. Data flows
+### 1.2. Data flows
 
-#### 2.1. Creating a new session
+#### 1.2.1. Creating a new session
 
 ```mermaid
 sequenceDiagram
+    autonumber
     User->>+API: request create a session
     API->>Redis: generate a session ID<br/>and store in Redis
     alt is participant
@@ -122,6 +123,30 @@ sequenceDiagram
     User->>+Notificator: push the session ID
     Notificator->>Redis: Create a pair of connection ID and the session ID<br/> and store it in Redis.
     Notificator->>-User: acknowlege the web socket connection.
+```
+
+#### 1.2.2. Receive anwsers from participants
+
+```mermaid
+sequenceDiagram
+    autonumber
+    _Participant->>+API: push the answer
+    API->>Message queue: push the answer<br />for evaluating
+    API->>-_Participant: confirm answer received
+    Message queue->>Worker: receive the answer
+    Worker->>+Redis: get the result from cache
+    Redis->>-Worker: receive the result
+    Worker->>Worker: evaluate the answer
+    Worker->>Primary DB: store the awswer and the evaluation result
+    Primary DB->>Replica DB: synchronize updated data
+    Worker->>Message queue: push the evaluation result to notify
+    Message queue->>Notificator: receive the evaluation result
+    Notificator->>_Participant: push the evaluation result
+    Notificator->>Scoreboard viewer: notify the scoreboard is updated
+    Scoreboard viewer->>+API: request retriving the updated scoreboard
+    API->>+Replica DB: query the scoreboard
+    Replica DB->>-API: return the scoreboard
+    API->>-Scoreboard viewer: return the scoreboard
 ```
 
 ### 3. Technologies and tools
