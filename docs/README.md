@@ -12,9 +12,13 @@
 
 This service receives requests from users, including creating sessions, receiving participants' answers, and retrieving the scoreboard.
 
+The number of API workers can be increased based on the growth in the number of users.
+
 ##### 1.2.1.2. Notificator
 
 This service notifies participants and scoreboard viewers of new updates, including question results and scoreboard changes.
+
+The number of Notificator workers can be increased based on the growth in the number of users.
 
 ##### 1.2.1.3. Worker
 
@@ -23,6 +27,8 @@ This service serves the following purposes:
 - Evaluating participants' answers.
 - Writing participants' scores to the database.
 - Broadcasting results to the Notificator via Message Queue to notify users of updates.
+
+The number of Worker service workers can be increased based on the growth in the number of users.
 
 ##### 1.2.1.4. Migrator
 
@@ -131,24 +137,51 @@ sequenceDiagram
 sequenceDiagram
     autonumber
     _Participant->>+API: push the answer
-    API->>Message queue: push the answer<br />for evaluating
-    API->>-_Participant: confirm answer received
-    Message queue->>Worker: receive the answer
-    Worker->>+Redis: get the result from cache
-    Redis->>-Worker: receive the result
-    Worker->>Worker: evaluate the answer
-    Worker->>Primary DB: store the awswer and the evaluation result
+    API->>+Redis: get the result from cache
+    Redis->>-API: receive the result
+    API->>API: evaluate the answer
+    API->>Message queue: push the answer and<br />the evaluation result
+    API->>_Participant: return the evaluation result
+    Message queue->>Worker: receive the answer and<br />the evaluation result
+    Worker->>Primary DB: store the awswer and<br />the evaluation result
     Primary DB->>Replica DB: synchronize updated data
     Worker->>Message queue: push the evaluation result to notify
     Message queue->>Notificator: receive the evaluation result
-    Notificator->>_Participant: push the evaluation result
     Notificator->>Scoreboard viewer: notify the scoreboard is updated
-    Scoreboard viewer->>+API: request retriving the updated scoreboard
-    API->>+Replica DB: query the scoreboard
-    Replica DB->>-API: return the scoreboard
-    API->>-Scoreboard viewer: return the scoreboard
 ```
 
-### 3. Technologies and tools
+#### 1.2.3. Update cache for result
 
-###
+To prevent Redis from running out of memory, we apply a time-to-live (TTL) for values. However, this approach requires querying the database to update cached values. The update method is described by the following flow:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    API->>+Redis: get the result from cache
+    Redis->>-API: receive the result
+    alt is result does not exists in cache
+    API->>+Replica DB: get the result from DB
+    Replica DB->>-API: return the result
+    API->>+Redis: update cache
+    end
+```
+
+### 1.3. Technologies and tools
+
+#### 1.3.1. Kubernetes
+
+We use Kubernetes for the following purposes:
+
+- Resource Management: control resources (CPU, RAM, Disk) that each container need.
+- Horizontal scalling: Increase or decrease number of application containers based on the growth in the number of users.
+- Load balancing: Distributes network traffic across multiple containers to ensure high availability and reliability of services.
+
+#### 1.3.2. PostgreSQL
+
+We use PostgresQL for the main database to store and query data.
+
+The database is a bottleneck in the system, because we cannot scale it immediately when number of users changed. To solve this problem, we have 2 databases:
+
+- The primary database: receive write transactions from Worker service containers. Number of transactions is controlled when using the message queue.
+- The replica database: receive read transactions from API service containers. We can increase number of replica databases when number of users changed.
+
