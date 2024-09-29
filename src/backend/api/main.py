@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 
 from core.domains.quiz import repository as quiz_repository, actions as quiz_actions
 from core.domains.quiz.schemas import Answer
+from core.services.rabbitmq import sender
 
 from .schemas import QuizSchema, QuizQuestionSchema
 
@@ -50,6 +51,12 @@ def submit_anwsers(quiz_id: int, answers: List[Answer]):
     if not quiz:
         raise HTTPException(status_code=404, detail='not found')
     score = quiz_actions.evaluate_answers(quiz, answers)
+
+    answers = [answer.model_dump() for answer in answers]
+    sender.send_message(
+        'record_results',
+        {'quiz_id': quiz_id, 'score': score, 'answers': answers}
+    )
     return {'total_score': score}
 
 
