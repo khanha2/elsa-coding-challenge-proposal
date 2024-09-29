@@ -296,12 +296,18 @@ The code structure
 |    |    |    |    |    | -- test_submit_answer_action.py
 |    | -- notificator
 |    |    | -- main.py
+|    | -- worker
+|    |    | -- main.py
+|    |    | -- tasks
+|    |    |    | -- notifying_task.py
 | -- frontend
 ```
 
 ### 2.2. Module explation
 
-#### Core module
+#### 2.2.1. The backend code
+
+##### 2.2.1.1. The core module
 
 - Store the common tools, including:
   + Database connection
@@ -312,4 +318,14 @@ The code structure
   + Actions: Stores all actions.
   + Repository module: Supports data retrieval.
 - Store commonly used helpers.
-- Store unit tests for business flows.
+- Store unit tests for business flows in domains.
+
+##### 2.2.1.2. The API module
+
+Store API actions
+
+##### 2.2.1.3. The Notificator module
+
+
+
+##### 2.2.1.4. The Worker module
