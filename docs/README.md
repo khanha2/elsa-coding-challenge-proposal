@@ -168,7 +168,15 @@ sequenceDiagram
 
 ### 1.3. Technologies and tools
 
-#### 1.3.1. Kubernetes
+#### 1.3.1. Python
+
+We use python with the following libraries:
+
+- FastAPI: the web framework.
+- Pika: the RabbitMQ client library.
+- SQLAlchemy: the database ORM.
+
+#### 1.3.2. Kubernetes
 
 We use Kubernetes for the following purposes:
 
@@ -176,7 +184,9 @@ We use Kubernetes for the following purposes:
 - **Horizontal Scaling**: Increases or decreases the number of application containers based on user growth.
 - **Load Balancing**: Distributes network traffic across multiple containers to ensure high availability and reliability of services.
 
-#### 1.3.2. PostgreSQL
+Kubernetes can be deployed on AWS using **EKS**.
+
+#### 1.3.3. PostgreSQL
 
 We use PostgreSQL as the main database to store and query data.
 
@@ -185,7 +195,9 @@ The database is a bottleneck in the system because we cannot scale it as fast as
 - The primary database: Receives write transactions from Worker service containers. The number of transactions is controlled by using the message queue.
 - The replica database: Receives read transactions from API service containers. We can increase the number of replica databases when the number of users changes.
 
-#### 1.3.3. Redis
+PostgreSQL can be deployed on AWS using **RDS**.
+
+#### 1.3.4. Redis
 
 Redis serves the following purposes:
 
@@ -194,7 +206,9 @@ Redis serves the following purposes:
 
 We can apply Redis replication to handle a large number of users.
 
-#### 1.3.4. RabbitMQ
+Redis can be deployed on AWS using **ElastiCache**.
+
+#### 1.3.5. RabbitMQ
 
 RabbitMQ is used for message queuing because of the following reasons:
 
@@ -202,4 +216,41 @@ RabbitMQ is used for message queuing because of the following reasons:
 - Messages can be persisted, replicated, and acknowledged to ensure they are not lost, even if the system fails.
 - It supports horizontal scaling, allowing multiple service containers to connect.
 - It supports message acknowledgment, ensuring that a message is processed once and only once.
-RabbitMQ provides built-in tools for monitoring message queues, consumers, and system performance, allowing for effective management and debugging.
+  RabbitMQ provides built-in tools for monitoring message queues, consumers, and system performance, allowing for effective management and debugging.
+
+Redis can be deployed on AWS using **Amazon MQ**.
+
+#### 1.3.6. Sentry
+
+Sentry receives and notifies service exceptions immediately. We can self-host by using Kubernetes or use Sentry SaaS.
+
+#### 1.3.7. Argo CD
+
+Argo CD declares and controls service definitions, configurations, and environments. It ensures that deployment and lifecycle management are automated, auditable, and easy to understand.
+
+#### 1.3.8. Amazon Elastic Container Registry (ECR)
+
+Manage container images in AWS.
+
+#### 1.3.9. ELK
+
+This component helps developers monitor services via logs. It includes four tools:
+
+- **Filebeat**: Collects logs from services.
+- **Logstash**: Parses and extracts information from logs, storing it in the log database.
+- **Elasticseach**: the database for storing logs.
+- **Kibana**: A GUI for developers to access logs.
+
+If we use AWS, we can substitute the ELK stack with **CloudWatch**.
+
+#### 1.3.10. AWS Systems Manager (SSM)
+
+Store the parameters in AWS for building or deploying services.
+
+#### 1.3.11. Prometheus
+
+Prometheus records metrics in a time series database built using an HTTP pull model, with flexible queries and real-time alerting.
+
+#### 1.3.12. Grafana
+
+Grafana helps developers access metrics in Prometheus via queries.
