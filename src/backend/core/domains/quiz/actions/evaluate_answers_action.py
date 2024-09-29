@@ -2,7 +2,7 @@ from typing import List
 
 from ..models import Quiz
 from ..repository import list_questions_by_quiz_id
-from ..structs import Answer
+from ..schemas import Answer
 
 
 def perform(quiz: Quiz, answers: List[Answer]) -> int:

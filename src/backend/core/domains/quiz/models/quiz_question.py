@@ -1,5 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import relationship
 
 from core.db.database import Base
 
@@ -16,4 +17,3 @@ class QuizQuestion(Base):
     expected_option = Column(String, nullable=True)
     # Structure of options: [{'code': 'A', 'content': 'content of option A'}, ...]
     options = Column(JSONB, nullable=True)
-
