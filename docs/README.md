@@ -262,39 +262,41 @@ Grafana helps developers access metrics in Prometheus via queries.
 The code structure
 
 ```
-api
-| -- models.py
-| -- main.py
-core
-| -- db
-|    | -- versions
-|    | -- database.py
-| -- domains
-|    | -- quiz
-|    |    | -- models
-|    |    |    | -- quiz.py
+| -- backend
+|    | -- api
+|    |    | -- models.py
+|    |    | -- main.py
+|    | -- core
+|    |    | -- db
+|    |    |    | -- versions
+|    |    |    | -- database.py
+|    |    | -- domains
+|    |    |    | -- quiz
+|    |    |    |    | -- models
+|    |    |    |    |    | -- quiz.py
+|    |    |    |    |    | -- ...
+|    |    |    |    |    | -- __init__.py
+|    |    |    |    | -- actions
+|    |    |    |    |    | -- submit_answer_action.py
+|    |    |    |    | -- repository.py
+|    |    |    | -- user
+|    |    |    |    | -- models
+|    |    |    |    | -- res
 |    |    |    | -- ...
-|    |    |    | -- __init__.py
-|    |    | -- actions
-|    |    |    | -- submit_answer_action.py
-|    |    | -- repository.py
-|    | -- user
-|    |    | -- models
-|    |    | -- res
-|    | -- ...
-| -- helpers
-|    | -- string_helper.py
-|    | --- ...
-| -- services
-|    | -- cache.py
-|    | -- rabbitmq.py
-|    | -- redis.py
-| -- tests
-|    | -- domains
-|    |    | -- quiz
-|    |    |    | -- test_submit_answer_action.py
-notificator
-| -- main.py
+|    |    | -- helpers
+|    |    |    | -- string_helper.py
+|    |    |    | --- ...
+|    |    | -- services
+|    |    |    | -- cache.py
+|    |    |    | -- rabbitmq.py
+|    |    |    | -- redis.py
+|    |    | -- tests
+|    |    |    | -- domains
+|    |    |    |    | -- quiz
+|    |    |    |    |    | -- test_submit_answer_action.py
+|    | -- notificator
+|    |    | -- main.py
+| -- frontend
 ```
 
 ### 2.2. Module explation
