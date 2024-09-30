@@ -141,6 +141,8 @@ This component controls requests from participants to write the results to the d
 
 This database receives write transations from Worker service workers to store data.
 
+In case number of write transactions is very large in the future, we can use sharding method for the Primary database by splitting and storing a single logical dataset in multiple databases.
+
 ##### 2.2.7.2. Replica database
 
 This database serves the following purposes:
