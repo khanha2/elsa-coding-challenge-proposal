@@ -22,6 +22,8 @@ In both cases, the bottleneck when scalling is the database. We cannot scale it 
 To control the number of write transactions from write requests, we use a message queue to capture and process transactions asynchronously.
 To handle a large number of read transactions, we can increase the number of replica databases and services.
 
+In case number of write transactions is very large in the future, we can use sharding method for the Primary database by splitting and storing a single logical dataset in multiple databases.
+
 ### 1.2. Monitoring and Observability
 
 We have 3 methods to monitor the system
