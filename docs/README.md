@@ -73,7 +73,6 @@ The number of Notificator workers can be increased based on the growth in the nu
 
 This service serves the following purposes:
 
-- Evaluating participants' answers.
 - Writing participants' scores to the database.
 - Broadcasting results to the Notificator via Message Queue to notify users of updates.
 
